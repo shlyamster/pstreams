@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.7)
-project(pstream VERSION 1.0.1 LANGUAGES CXX DESCRIPTION "C++ utility for simple IOStream-based Inter-Process Communication")
+project(pstreams VERSION 1.0.1 LANGUAGES CXX DESCRIPTION "C++ utility for simple IOStream-based Inter-Process Communication")
 set(CMAKE_CXX_STANDARD 98)
 
 include(GNUInstallDirs)
