@@ -19,7 +19,7 @@ includedir = $(prefix)/include
 INSTALL = install
 INSTALL_DATA = $(INSTALL) -p -v -m 0644
 
-SOURCES = pstream.h
+SOURCES = pstream/pstream.hpp
 TESTS = test_pstreams test_minimum
 GENERATED_FILES = ChangeLog MANIFEST
 EXTRA_FILES = AUTHORS LICENSE_1_0.txt Doxyfile INSTALL Makefile README \
@@ -27,7 +27,7 @@ EXTRA_FILES = AUTHORS LICENSE_1_0.txt Doxyfile INSTALL Makefile README \
 
 DIST_FILES = $(SOURCES) $(GENERATED_FILES) $(EXTRA_FILES)
 
-VERS := $(shell awk -F' ' '/^\#define *PSTREAMS_VERSION/{ print $$NF }' pstream.h)
+VERS := $(shell awk -F' ' '/^\#define *PSTREAMS_VERSION/{ print $$NF }' pstream/pstream.hpp)
 
 all: $(TESTS) | pstreams.wout
 
@@ -37,16 +37,16 @@ check run_tests test: all
 check-werror:
 	@$(MAKE) EXTRA_CXXFLAGS=-Werror all check
 
-test_%: test_%.cc pstream.h FORCE
+test_%: test_%.cc pstream/pstream.hpp FORCE
 	$(CXX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(LDFLAGS) -o $@ $<
 
 MANIFEST: Makefile
 	@for i in $(DIST_FILES) ; do echo "pstreams-$(VERS)/$$i" ; done > $@
 
-docs: pstream.h mainpage.html
+docs: pstream/pstream.hpp mainpage.html
 	@doxygen Doxyfile
 
-mainpage.html: pstream.h Makefile
+mainpage.html: pstream/pstream.hpp Makefile
 	@perl -pi -e "s/^(<p>Version) [0-9\.]*(<\/p>)/\1 $(VERS)\2/" $@
 
 ChangeLog:
@@ -60,7 +60,7 @@ srpm: pstreams-$(VERS).tar.gz
 pstreams-$(VERS):
 	@ln -s . $@
 
-pstreams-$(VERS).tar.gz: pstream.h $(GENERATED_FILES) pstreams-$(VERS)
+pstreams-$(VERS).tar.gz: pstream/pstream.hpp $(GENERATED_FILES) pstreams-$(VERS)
 	@tar -czvf $@ `cat MANIFEST`
 
 pstreams-docs-$(VERS):
@@ -69,7 +69,7 @@ pstreams-docs-$(VERS):
 pstreams-docs-$(VERS).tar.gz: docs pstreams-docs-$(VERS)
 	@tar -czvhf $@ pstreams-docs-$(VERS)
 
-TODO : pstream.h mainpage.html test_pstreams.cc
+TODO : pstream/pstream.hpp mainpage.html test_pstreams.cc
 	@grep -nH TODO $^ | sed -e 's@ *// *@@' > $@
 
 clean:
@@ -79,7 +79,7 @@ clean:
 
 install:
 	@install -d $(DESTDIR)$(includedir)/pstreams
-	@$(INSTALL_DATA) pstream.h $(DESTDIR)$(includedir)/pstreams/pstream.h
+	@$(INSTALL_DATA) pstream/pstream.hpp $(DESTDIR)$(includedir)/pstreams/pstream.hpp
 
 pstreams.wout:
 	@echo "Wide Load" | iconv -f ascii -t UTF-32 > $@
